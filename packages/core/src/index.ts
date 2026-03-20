@@ -5,6 +5,7 @@ import type {
   CommandResult,
   ConnectorRegistryItem,
   ContentPack,
+  DashboardSummary,
   ExecutionBand,
   HealthFollowUp,
   KnowledgeDocument,
@@ -33,78 +34,82 @@ export const moduleCatalog = [
 export const demoTasks: Task[] = [
   {
     id: "task-1",
-    title: "Wire live Supabase auth for web and Android",
-    description: "Use email/password auth now, preserve room for magic links and social auth later.",
+    title: "Build the real Task + Project OS",
+    description: "Replace placeholder navigation with a true user-scoped execution system backed by Supabase.",
     status: "In Progress",
-    nextStep: "Verify sign-in on web and Android with the same account.",
+    nextStep: "Ship task CRUD, live dashboard counts, and project briefs.",
     priority: 10,
     lifecycle: "active",
     escalation: "attention_needed",
     category: "operational",
     dueAt: null,
-    ownerDependency: "Requires Supabase project variables."
+    ownerDependency: "Code + schema work",
+    updatedAt: "2026-03-20T15:45:00.000Z"
   },
   {
     id: "task-2",
-    title: "Enable Android follow-up reminders",
-    description: "Schedule local reminders now and store push tokens for later server delivery.",
+    title: "Create first live project brief",
+    description: "Use project briefs as the living brief layer for execution, continuity, and decision tracking.",
     status: "Ready",
-    nextStep: "Ask notification permission and schedule a test reminder.",
+    nextStep: "Create a product brief for Miss Cathy Task + Project OS.",
     priority: 9,
-    lifecycle: "active",
-    escalation: "stable",
-    category: "health",
-    dueAt: null,
-    ownerDependency: "Requires physical Android device for push validation."
-  },
-  {
-    id: "task-3",
-    title: "Verify connector registry truthfulness",
-    description: "Keep connector states explicit: active, unconfigured, handoff only, unavailable.",
-    status: "Ready",
-    nextStep: "Review starter registry and update verified dates after setup.",
-    priority: 8,
-    lifecycle: "active",
+    lifecycle: "planning",
     escalation: "stable",
     category: "strategic",
     dueAt: null,
-    ownerDependency: "Requires operator review."
+    ownerDependency: "Signed-in user action",
+    updatedAt: "2026-03-20T15:30:00.000Z"
+  },
+  {
+    id: "task-3",
+    title: "Capture the next 3 moves",
+    description: "Keep immediate action explicit so the dashboard drives follow-through.",
+    status: "Ready",
+    nextStep: "Review top priorities and commit the next step for each.",
+    priority: 8,
+    lifecycle: "active",
+    escalation: "stable",
+    category: "operational",
+    dueAt: null,
+    ownerDependency: "Operator review",
+    updatedAt: "2026-03-20T15:15:00.000Z"
   }
 ];
 
 export const demoProjects: ProjectBrief[] = [
   {
     id: "project-1",
-    name: "Miss Cathy Product Build",
-    objective: "Ship a premium website + Android operating system with truthful boundaries.",
-    whyItMatters: "Turns the knowledge pack into a practical daily command center.",
-    currentStatus: "Core shell, repositories, reminders, and connector registry implemented.",
+    name: "Miss Cathy Task + Project OS",
+    objective: "Turn the live site into a real execution operating system instead of a visual shell.",
+    whyItMatters: "This is the backbone that makes every other Miss Cathy module operational and accountable.",
+    currentStatus: "Source of truth is locked. Real data model and UI workflows are the next build layer.",
     lifecycle: "active",
-    escalation: "stable",
-    scope: ["Website command center", "Android companion app", "Supabase auth + data", "Connector registry", "Reminder flow"],
-    risks: ["Credentials not yet attached", "Push delivery requires real device + notification credentials"],
-    blockers: ["Supabase project creation is external", "Deployment credentials are external"],
-    nextSteps: ["Run SQL schema", "Add env vars", "Verify auth", "Deploy web", "Build Android"]
+    escalation: "attention_needed",
+    scope: ["Dashboard counts", "Task CRUD", "Project briefs", "Decision logs", "Continuity/savepoints"],
+    risks: ["Scope creep", "Placeholder UI drifting away from live data", "Migration mismatch"],
+    blockers: ["Need exact implementation pass in the live repo", "Need careful user-scoped Supabase wiring"],
+    nextSteps: ["Add repositories", "Ship task form and live list", "Ship project detail flow", "Verify on public site"],
+    updatedAt: "2026-03-20T15:50:00.000Z"
   }
 ];
 
 export const demoSavepoints: Savepoint[] = [
   {
     id: "savepoint-1",
-    title: "Miss Cathy MVP complete scaffold",
-    currentStatus: "Web + Android shells are in place with shared operating logic.",
+    title: "Miss Cathy live build checkpoint",
+    currentStatus: "Website is live. Auth works. Real operational backbone is now under construction.",
     decisionsMade: [
       "Website is the full command center",
-      "Android is optimized for dashboard, capture, command, and follow-through",
-      "Truthful execution bands remain visible"
+      "No fake modules will be passed off as complete",
+      "Task + Project OS is the first real functional layer"
     ],
     openQuestions: [
-      "Which connectors should move from unconfigured to active first?",
-      "Will v1 use Expo Push or direct FCM for production delivery?"
+      "Which module should follow Task + Project OS: Knowledge Hub or Health Ops?",
+      "Which Android flows should be mirrored first?"
     ],
-    nextStep: "Create Supabase project and run schema.",
-    continuitySummary: "All approved core elements preserved. Complexity is controlled through phased unlocks.",
-    updatedAt: "2026-03-18T12:00:00.000Z"
+    nextStep: "Build task CRUD and live dashboard summaries.",
+    continuitySummary: "Miss Cathy is now being realigned to the original export purpose: a working modular AI operating system.",
+    updatedAt: "2026-03-20T16:00:00.000Z"
   }
 ];
 
@@ -112,17 +117,8 @@ export const demoKnowledge: KnowledgeDocument[] = [
   {
     id: "knowledge-1",
     title: "Miss Cathy Core Operating Manual",
-    summary: "Mission, preservation rule, truthfulness boundaries, roles, continuity model.",
-    tags: ["core", "operating-system", "truthfulness"],
-    sourceOfTruth: true,
-    status: "active",
-    updatedAt: "2026-03-18T12:00:00.000Z"
-  },
-  {
-    id: "knowledge-2",
-    title: "Website + Android Product Draft",
-    summary: "Product brief, MVP scope, architecture direction, module list, release phases.",
-    tags: ["product", "website", "android"],
+    summary: "Mission, preservation rule, truthfulness boundaries, roles, and execution doctrine.",
+    tags: ["core", "operating-manual"],
     sourceOfTruth: true,
     status: "active",
     updatedAt: "2026-03-18T12:00:00.000Z"
@@ -132,119 +128,119 @@ export const demoKnowledge: KnowledgeDocument[] = [
 export const demoContent: ContentPack[] = [
   {
     id: "content-1",
-    title: "Miss Cathy Launch Thread",
-    channel: "X / Threads",
-    assetType: "Launch post pack",
-    goal: "Explain the product in a clear founder/operator voice.",
-    hook: "From prompt pack to real operating system.",
-    repurposingPlan: ["Convert to carousel", "Expand to landing page section", "Adapt into founder video script"],
-    publishPlan: "Publish after web preview is live and Android screenshots are captured."
+    title: "Launch Miss Cathy explainer",
+    channel: "website",
+    assetType: "landing copy",
+    goal: "Explain the product clearly",
+    hook: "A real operating system for execution, continuity, and truthful action.",
+    repurposingPlan: ["FAQ", "social post", "app store copy"],
+    publishPlan: "Update after Task + Project OS goes live."
   }
 ];
 
 export const demoBuilder: BuilderBrief[] = [
   {
     id: "builder-1",
-    name: "Miss Cathy v1",
-    productGoal: "Build a personal AI chief-of-staff platform for one user across web and Android.",
-    userFlow: ["Open dashboard", "Review Focus Now", "Run command", "Save continuity", "Follow through via reminder"],
-    stackChoice: ["Next.js App Router", "Expo Router", "Supabase", "Tailwind CSS"],
-    nextStep: "Attach real env vars and deploy."
+    name: "Task + Project OS build",
+    productGoal: "Convert the live website into a real operating backbone.",
+    userFlow: ["Sign in", "Create task", "Create project", "Track next steps", "Review dashboard"],
+    stackChoice: ["Next.js", "Supabase", "pnpm monorepo"],
+    nextStep: "Implement repositories and CRUD UI."
   }
 ];
 
 export const demoHealth: HealthFollowUp[] = [
   {
     id: "health-1",
-    title: "Follow-up review template",
+    title: "Health Ops module placeholder",
     urgencyLevel: 2,
-    likelyDomain: "Primary care / specialist follow-up",
-    careSetting: "Routine follow-up",
-    questionsToPrepare: ["What changed since the last visit?", "Which symptoms worsened or improved?", "Which records should be brought?"],
-    safetyNote: "Educational organization only. Escalate to urgent care or emergency care for severe or red-flag symptoms.",
-    nextStep: "Prepare visit brief and reminder."
+    likelyDomain: "general",
+    careSetting: "educational",
+    questionsToPrepare: ["What are the active symptoms?", "What follow-up is due?"],
+    safetyNote: "Educational support only. Escalate urgent symptoms immediately.",
+    nextStep: "Build after Task + Project OS and Knowledge Hub."
   }
 ];
 
 export const demoMonitoring: MonitoringBrief[] = [
   {
     id: "monitoring-1",
-    topic: "Website + Android launch readiness",
-    whyItMatters: "Prevents deployment drift and keeps quality bars visible.",
-    latestChange: "Repositories, reminders, and connector registry were implemented in the scaffold.",
-    riskLevel: "moderate",
-    recommendedMove: "Complete credentials, staging test, and device validation."
+    topic: "Miss Cathy live build",
+    whyItMatters: "The live site must evolve from shell to real operating system.",
+    latestChange: "Auth and user display are live; operational layers are next.",
+    riskLevel: "high",
+    recommendedMove: "Implement Task + Project OS in the live repo now."
   }
 ];
 
 export const demoConnectors: ConnectorRegistryItem[] = [
   {
     id: "connector-1",
-    connectorName: "Native Workspace Tools",
-    connectorFamily: "Native",
-    connectorType: "Built-in",
+    connectorName: "Supabase",
+    connectorFamily: "backend",
+    connectorType: "native",
     status: "active_connected",
-    connectedService: "Current workspace",
-    supportedActions: ["Planning", "Code generation", "Artifacts", "Knowledge organization"],
-    inputRequirements: ["Prompt", "Uploaded files"],
-    confirmationPolicy: "Normal confirmation for destructive edits only.",
-    permissionScope: "Current session tools only",
-    executionBoundary: "Direct in-session execution",
-    fallbackPath: "None required",
-    lastVerified: "2026-03-18",
-    notes: "Always available in the active session.",
+    connectedService: "Supabase",
+    supportedActions: ["auth", "database", "storage"],
+    inputRequirements: ["Project URL", "Publishable key", "Secret key"],
+    confirmationPolicy: "No extra confirmation for reads; confirm destructive writes.",
+    permissionScope: "Configured for Miss Cathy live project.",
+    executionBoundary: "Database and auth only.",
+    fallbackPath: "Demo mode when env is absent.",
+    lastVerified: "2026-03-20",
+    notes: "Primary backend for web and Android.",
     truthfulBand: "direct"
   },
   {
     id: "connector-2",
-    connectorName: "Calendar / Task / Notes",
-    connectorFamily: "Productivity",
-    connectorType: "External connector",
-    status: "available_but_unconfigured",
-    connectedService: "Not configured",
-    supportedActions: ["Create event", "Create task", "Append notes"],
-    inputRequirements: ["Connector credentials", "Approval", "Required fields"],
-    confirmationPolicy: "User confirmation required for writes.",
-    permissionScope: "Depends on connected provider",
-    executionBoundary: "Connector execution only after verified setup",
-    fallbackPath: "Generate Action Pack",
-    lastVerified: "2026-03-18",
-    notes: "Starter registry entry only.",
+    connectorName: "Vercel",
+    connectorFamily: "deployment",
+    connectorType: "git-linked",
+    status: "active_connected",
+    connectedService: "Vercel",
+    supportedActions: ["deploy web"],
+    inputRequirements: ["GitHub repo", "Environment variables"],
+    confirmationPolicy: "Production deploys happen from Git pushes.",
+    permissionScope: "Website only.",
+    executionBoundary: "Web deployment pipeline.",
+    fallbackPath: "Local dev via pnpm.",
+    lastVerified: "2026-03-20",
+    notes: "Current public site host.",
     truthfulBand: "connector"
   },
   {
     id: "connector-3",
-    connectorName: "Builder / Deployment",
-    connectorFamily: "Engineering",
-    connectorType: "External connector",
-    status: "available_but_unconfigured",
-    connectedService: "Not configured",
-    supportedActions: ["Create repo", "Create preview deploy", "Update environment variables"],
-    inputRequirements: ["Deployment platform access", "Repo access", "Approval"],
-    confirmationPolicy: "Explicit approval required before any irreversible action.",
-    permissionScope: "Deployment account specific",
-    executionBoundary: "Connector or handoff only",
-    fallbackPath: "Provide deployment runbook",
+    connectorName: "Google Play",
+    connectorFamily: "distribution",
+    connectorType: "handoff-only",
+    status: "handoff_only",
+    connectedService: "Play Console",
+    supportedActions: ["publish android bundle"],
+    inputRequirements: ["AAB", "Store listing assets"],
+    confirmationPolicy: "Manual console approval required.",
+    permissionScope: "Android publishing.",
+    executionBoundary: "Cannot publish without real console access.",
+    fallbackPath: "Prepare launch pack and handoff.",
     lastVerified: "2026-03-18",
-    notes: "Do not claim deployment unless actual integration exists.",
-    truthfulBand: "connector"
+    notes: "Not yet live.",
+    truthfulBand: "handoff"
   },
   {
     id: "connector-4",
-    connectorName: "External AI Provider Handoff",
-    connectorFamily: "AI",
-    connectorType: "Handoff",
-    status: "handoff_only",
-    connectedService: "Manual handoff",
-    supportedActions: ["Prompt transfer", "Model comparison", "External eval"],
-    inputRequirements: ["Prompt pack", "Manual execution"],
-    confirmationPolicy: "Manual only",
-    permissionScope: "No direct access",
-    executionBoundary: "Handoff-ready only",
-    fallbackPath: "Copy-ready prompt pack",
-    lastVerified: "2026-03-18",
-    notes: "Prepared payload only; no direct execution.",
-    truthfulBand: "handoff"
+    connectorName: "GitHub",
+    connectorFamily: "source-control",
+    connectorType: "git",
+    status: "active_connected",
+    connectedService: "GitHub",
+    supportedActions: ["push code", "auto deploy trigger"],
+    inputRequirements: ["Local repo", "Auth"],
+    confirmationPolicy: "Commit then push.",
+    permissionScope: "Miss Cathy repository.",
+    executionBoundary: "User-controlled outside this chat.",
+    fallbackPath: "Zip handoff.",
+    lastVerified: "2026-03-20",
+    notes: "Backs Vercel production site.",
+    truthfulBand: "connector"
   }
 ];
 
@@ -252,111 +248,93 @@ export const demoReminders: ReminderItem[] = [
   {
     id: "reminder-1",
     title: "Review Focus Now",
-    body: "Open Miss Cathy and execute the first next move.",
-    remindAt: "2026-03-18T18:00:00.000Z",
+    body: "Check the top priority tasks and update the next step.",
+    remindAt: "2026-03-21T09:00:00.000Z",
     status: "scheduled"
   }
 ];
 
-export const demoSnapshot: AppSnapshot = {
-  tasks: demoTasks,
-  projects: demoProjects,
-  savepoints: demoSavepoints,
-  knowledge: demoKnowledge,
-  content: demoContent,
-  builder: demoBuilder,
-  health: demoHealth,
-  monitoring: demoMonitoring,
-  connectors: demoConnectors,
-  reminders: demoReminders
-};
-
-const MODE_RULES: Array<{ mode: Mode; keywords: string[] }> = [
-  { mode: "research", keywords: ["research", "find", "compare", "synopsis", "source"] },
-  { mode: "planning", keywords: ["plan", "roadmap", "prioritize", "choose"] },
-  { mode: "execution", keywords: ["build", "implement", "finish", "ship"] },
-  { mode: "review", keywords: ["review", "retro", "diagnose", "audit"] },
-  { mode: "content", keywords: ["caption", "hook", "script", "campaign", "post"] },
-  { mode: "builder", keywords: ["website", "android", "database", "api", "screen", "app"] },
-  { mode: "health", keywords: ["symptom", "report", "doctor", "recovery", "follow-up"] },
-  { mode: "monitoring", keywords: ["watch", "monitor", "briefing", "risk"] },
-  { mode: "knowledge", keywords: ["knowledge", "savepoint", "archive", "document"] }
-];
-
-export function routeMode(input: string): Mode {
-  const normalized = input.toLowerCase();
-  const match = MODE_RULES.find((rule) => rule.keywords.some((keyword) => normalized.includes(keyword)));
-  return match?.mode ?? "execution";
-}
-
-export function truthfulExecutionBand(input: string): ExecutionBand {
-  const normalized = input.toLowerCase();
-
-  if (/(deploy|send|book|publish live|purchase|checkout|create repo|post to)/.test(normalized)) {
-    return "connector";
-  }
-  if (/(handoff|copy this into|submit manually|manual step)/.test(normalized)) {
-    return "handoff";
-  }
-  if (/(recommend|unsupported|not available|no access)/.test(normalized)) {
-    return "recommendation";
-  }
-  return "direct";
-}
-
-export function buildActionPack(input: string): ActionPack {
+export function buildAppSnapshot(): AppSnapshot {
   return {
-    objective: input,
-    targetService: "External service or connector",
-    connectorState: "available_but_unconfigured",
-    requiredInputs: ["Verified connector", "User confirmation", "Required fields"],
-    preparedPayload: `Prepared payload for: ${input}`,
-    confirmationNeeded: true,
-    manualStep: "Open the target service, review the prepared payload, and confirm execution.",
-    nextStep: "After configuration, re-run through the connector path."
+    tasks: demoTasks,
+    projects: demoProjects,
+    savepoints: demoSavepoints,
+    knowledge: demoKnowledge,
+    content: demoContent,
+    builder: demoBuilder,
+    health: demoHealth,
+    monitoring: demoMonitoring,
+    connectors: demoConnectors,
+    reminders: demoReminders
   };
 }
 
-export function buildCommandResult(input: string): CommandResult {
-  const mode = routeMode(input);
-  const executionBand = truthfulExecutionBand(input);
+export function computeDashboardSummary(tasks: Task[], projects: ProjectBrief[]): DashboardSummary {
+  const activeTasks = tasks.filter((task) => task.lifecycle !== "completed" && task.lifecycle !== "archived");
+  const focusNow = [...activeTasks]
+    .sort((left, right) => {
+      const escalationScore = (value: Task["escalation"]) =>
+        value === "critical" ? 4 : value === "attention_needed" ? 3 : value === "stable" ? 2 : 1;
+      const byEscalation = escalationScore(right.escalation) - escalationScore(left.escalation);
+      if (byEscalation !== 0) return byEscalation;
+      const byPriority = right.priority - left.priority;
+      if (byPriority !== 0) return byPriority;
+      return (right.updatedAt ?? "").localeCompare(left.updatedAt ?? "");
+    })
+    .slice(0, 5);
 
+  const nextMoves = [...activeTasks]
+    .filter((task) => task.nextStep.trim().length > 0)
+    .sort((left, right) => right.priority - left.priority)
+    .slice(0, 3);
+
+  const risks = [
+    ...tasks
+      .filter((task) => task.lifecycle === "at_risk" || ["critical", "attention_needed"].includes(task.escalation))
+      .map((task) => ({
+        id: task.id,
+        title: task.title,
+        type: "task" as const,
+        detail: `${task.lifecycle} • ${task.escalation}`
+      })),
+    ...projects
+      .filter((project) => project.lifecycle === "at_risk" || ["critical", "attention_needed"].includes(project.escalation))
+      .map((project) => ({
+        id: project.id,
+        title: project.name,
+        type: "project" as const,
+        detail: `${project.lifecycle} • ${project.escalation}`
+      }))
+  ].slice(0, 6);
+
+  return {
+    focusNowCount: focusNow.length,
+    inProgressCount: tasks.filter((task) => task.lifecycle === "active").length,
+    blockedCount: tasks.filter((task) => task.lifecycle === "waiting" || ["critical", "attention_needed"].includes(task.escalation)).length,
+    waitingOnCount: tasks.filter((task) => task.lifecycle === "waiting").length,
+    risksCount: risks.length,
+    projectCount: projects.filter((project) => project.lifecycle !== "archived").length,
+    focusNow,
+    nextMoves,
+    risks
+  };
+}
+
+export function buildCommandResult(mode: Mode, executionBand: ExecutionBand): CommandResult {
   return {
     mode,
     executionBand,
-    headline: "Miss Cathy routed the request into a truthful execution path.",
+    headline: "Miss Cathy keeps truthfulness explicit.",
     sections: [
       {
-        title: "Known Context",
-        body: "The system preserves dashboard-first operation, continuity, connector honesty, health safety boundaries, and additive upgrades."
+        title: "Current status",
+        body: "This output respects direct execution, connector execution, handoff readiness, and recommendation-only boundaries."
       },
       {
-        title: "Mode",
-        body: `The request maps to ${mode}.`
-      },
-      {
-        title: "Execution Boundary",
-        body:
-          executionBand === "direct"
-            ? "This work can be completed directly inside the product surfaces."
-            : executionBand === "connector"
-            ? "This work requires a verified external connector and approval-aware execution."
-            : executionBand === "handoff"
-            ? "This work is prepared as a handoff-ready package, not executed directly."
-            : "This work is recommendation-only because the required access or capability is unavailable."
+        title: "Next move",
+        body: "Advance the current task or create a savepoint so continuity stays visible."
       }
     ],
-    nextStep:
-      executionBand === "direct"
-        ? "Complete the work, then save a continuity record and next step."
-        : "Review the action pack and complete the external step through a real connector or manual handoff.",
-    actionPack: executionBand === "direct" ? undefined : buildActionPack(input)
+    nextStep: "Update the relevant module and capture the next step."
   };
-}
-
-export function classifyPriorityLabel(priority: number): "Critical" | "High" | "Moderate" | "Low" {
-  if (priority >= 9) return "Critical";
-  if (priority >= 7) return "High";
-  if (priority >= 5) return "Moderate";
-  return "Low";
 }

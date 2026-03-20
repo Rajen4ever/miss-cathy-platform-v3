@@ -56,10 +56,39 @@ export interface Task extends DashboardItem {
   dueAt?: string | null;
   projectId?: string | null;
   ownerDependency?: string;
+  updatedAt?: string;
+}
+
+export interface TaskInput {
+  title: string;
+  description: string;
+  category: DashboardCategory;
+  status: string;
+  priority: number;
+  lifecycle: LifecycleState;
+  escalation: EscalationState;
+  nextStep: string;
+  ownerDependency: string;
+  dueAt?: string | null;
+  projectId?: string | null;
 }
 
 export interface ProjectBrief {
   id: string;
+  name: string;
+  objective: string;
+  whyItMatters: string;
+  currentStatus: string;
+  lifecycle: LifecycleState;
+  escalation: EscalationState;
+  scope: string[];
+  risks: string[];
+  blockers: string[];
+  nextSteps: string[];
+  updatedAt?: string;
+}
+
+export interface ProjectBriefInput {
   name: string;
   objective: string;
   whyItMatters: string;
@@ -84,6 +113,16 @@ export interface DecisionLog {
   createdAt: string;
 }
 
+export interface DecisionLogInput {
+  projectId?: string | null;
+  decision: string;
+  context: string;
+  chosenDirection: string;
+  why: string;
+  risks: string[];
+  revisitTrigger: string;
+}
+
 export interface Savepoint {
   id: string;
   title: string;
@@ -93,6 +132,27 @@ export interface Savepoint {
   nextStep: string;
   continuitySummary: string;
   updatedAt: string;
+}
+
+export interface SavepointInput {
+  title: string;
+  currentStatus: string;
+  decisionsMade: string[];
+  openQuestions: string[];
+  nextStep: string;
+  continuitySummary: string;
+}
+
+export interface DashboardSummary {
+  focusNowCount: number;
+  inProgressCount: number;
+  blockedCount: number;
+  waitingOnCount: number;
+  risksCount: number;
+  projectCount: number;
+  focusNow: Task[];
+  nextMoves: Task[];
+  risks: Array<{ id: string; title: string; type: "task" | "project"; detail: string }>;
 }
 
 export interface KnowledgeDocument {

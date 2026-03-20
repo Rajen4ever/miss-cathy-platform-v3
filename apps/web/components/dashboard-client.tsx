@@ -1,63 +1,94 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { ConnectorRegistryItem, ProjectBrief, Task } from "@misscathy/types";
-import { listConnectors, listProjects, listTasks } from "../lib/repositories";
+import type { DashboardSummary } from "@misscathy/types";
+import { getDashboardSummary, listProjects } from "../lib/repositories";
 import { SectionCard } from "./section-card";
-import { StatChip } from "./stat-chip";
+import { DashboardSummaryCards } from "./dashboard-summary-cards";
+import { FocusNowList } from "./focus-now-list";
+import { NextMovesList } from "./next-moves-list";
+import { EmptyState } from "./ui-helpers";
+import Link from "next/link";
 
 export function DashboardClient() {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [projects, setProjects] = useState<ProjectBrief[]>([]);
-  const [connectors, setConnectors] = useState<ConnectorRegistryItem[]>([]);
+  const [summary, setSummary] = useState<DashboardSummary | null>(null);
+  const [projectNames, setProjectNames] = useState<string[]>([]);
 
   useEffect(() => {
     async function load() {
-      const [taskData, projectData, connectorData] = await Promise.all([
-        listTasks(),
-        listProjects(),
-        listConnectors()
+      const [dashboardSummary, projects] = await Promise.all([
+        getDashboardSummary(),
+        listProjects()
       ]);
-      setTasks(taskData);
-      setProjects(projectData);
-      setConnectors(connectorData);
+
+      setSummary(dashboardSummary);
+      setProjectNames(projects.map((project) => project.name));
     }
 
     void load();
   }, []);
 
-  const blocked = tasks.filter((task) => task.escalation === "attention_needed" || task.lifecycle === "at_risk").length;
+  if (!summary) {
+    return (
+      <SectionCard title="Command Center" description="Loading live task and project data.">
+        <div className="text-sm text-slate-300">Loading...</div>
+      </SectionCard>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatChip label="Focus Now" value={tasks.length} />
-        <StatChip label="Blocked" value={blocked} />
-        <StatChip label="Projects" value={projects.length} />
-        <StatChip label="Connectors" value={connectors.length} />
-      </section>
+      <DashboardSummaryCards summary={summary} />
 
       <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-        <SectionCard title="Focus Now" description="Live repository view with demo fallback when env or session is unavailable.">
-          <div className="space-y-3">
-            {tasks.map((task) => (
-              <div key={task.id} className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="font-medium">{task.title}</div>
-                  <span className="badge">{task.priority}/10</span>
-                </div>
-                <p className="mt-2 text-sm leading-6 text-slate-300">{task.description}</p>
-                <div className="mt-3 text-sm text-cyan-100">Next: {task.nextStep}</div>
-              </div>
-            ))}
-          </div>
+        <SectionCard title="Focus Now" description="Real top priorities generated from your live task data.">
+          <FocusNowList tasks={summary.focusNow} />
         </SectionCard>
 
-        <SectionCard title="Next 3 Moves" description="Kept explicit to maintain low friction.">
-          <div className="space-y-3 text-sm leading-6 text-slate-300">
-            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">1. Verify sign-in and user bootstrap.</div>
-            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">2. Confirm connector registry templates are visible.</div>
-            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">3. Validate Android local reminders and push-token registration.</div>
+        <SectionCard title="Next 3 Moves" description="Top actionable tasks with a real next step.">
+          <NextMovesList tasks={summary.nextMoves} />
+        </SectionCard>
+      </div>
+
+      <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+        <SectionCard title="Risks" description="Tasks and projects that need attention.">
+          {summary.risks.length ? (
+            <div className="space-y-3">
+              {summary.risks.map((item) => (
+                <div key={`${item.type}-${item.id}`} className="rounded-2xl border border-white/10 bg-black/20 p-4 text-sm leading-6 text-slate-300">
+                  <div className="font-medium text-white">{item.title}</div>
+                  <div className="mt-2 text-slate-400">{item.type} • {item.detail}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              title="No active risks"
+              description="When a task or project moves into at-risk or attention-needed state, it will appear here."
+            />
+          )}
+        </SectionCard>
+
+        <SectionCard title="Live project portfolio" description="Project briefs currently in the system.">
+          {projectNames.length ? (
+            <div className="space-y-3">
+              {projectNames.map((name) => (
+                <div key={name} className="rounded-2xl border border-white/10 bg-black/20 p-4 text-sm leading-6 text-slate-300">
+                  {name}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              title="No live projects"
+              description="Create the first project brief to start turning Miss Cathy into a real operating system."
+              action={<Link href="/projects" className="badge">Open projects</Link>}
+            />
+          )}
+
+          <div className="mt-4 flex flex-wrap gap-3">
+            <Link href="/tasks" className="badge">Open tasks</Link>
+            <Link href="/projects" className="badge">Open projects</Link>
           </div>
         </SectionCard>
       </div>

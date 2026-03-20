@@ -2,15 +2,22 @@ import type {
   BuilderBrief,
   ConnectorRegistryItem,
   ContentPack,
+  DashboardSummary,
+  DecisionLog,
+  DecisionLogInput,
   HealthFollowUp,
   KnowledgeDocument,
-  MonitoringBrief,
   ProjectBrief,
+  ProjectBriefInput,
   Savepoint,
+  SavepointInput,
   SessionUser,
-  Task
+  Task,
+  TaskInput,
+  MonitoringBrief
 } from "@misscathy/types";
 import {
+  computeDashboardSummary,
   demoBuilder,
   demoConnectors,
   demoContent,
@@ -32,6 +39,75 @@ async function requireUserId() {
   if (!supabase) return null;
   const { data } = await supabase.auth.getUser();
   return data.user?.id ?? null;
+}
+
+function toStringArray(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.filter((item): item is string => typeof item === "string").map((item) => item.trim()).filter(Boolean);
+  }
+  return [];
+}
+
+function mapTask(row: any): Task {
+  return {
+    id: row.id,
+    title: row.title,
+    description: row.description,
+    status: row.status,
+    nextStep: row.next_step,
+    priority: row.priority,
+    lifecycle: row.lifecycle,
+    escalation: row.escalation,
+    category: row.category,
+    dueAt: row.due_at,
+    projectId: row.project_id,
+    ownerDependency: row.owner_dependency,
+    updatedAt: row.updated_at
+  };
+}
+
+function mapProject(row: any): ProjectBrief {
+  return {
+    id: row.id,
+    name: row.name,
+    objective: row.objective,
+    whyItMatters: row.why_it_matters,
+    currentStatus: row.current_status,
+    lifecycle: row.lifecycle,
+    escalation: row.escalation,
+    scope: toStringArray(row.scope),
+    risks: toStringArray(row.risks),
+    blockers: toStringArray(row.blockers),
+    nextSteps: toStringArray(row.next_steps),
+    updatedAt: row.updated_at
+  };
+}
+
+function mapDecision(row: any): DecisionLog {
+  return {
+    id: row.id,
+    projectId: row.project_id,
+    decision: row.decision,
+    context: row.context,
+    chosenDirection: row.chosen_direction,
+    why: row.why,
+    risks: toStringArray(row.risks),
+    revisitTrigger: row.revisit_trigger,
+    createdAt: row.created_at
+  };
+}
+
+function mapSavepoint(row: any): Savepoint {
+  return {
+    id: row.id,
+    title: row.title,
+    currentStatus: row.current_status,
+    decisionsMade: toStringArray(row.decisions_made),
+    openQuestions: toStringArray(row.open_questions),
+    nextStep: row.next_step,
+    continuitySummary: row.continuity_summary,
+    updatedAt: row.updated_at
+  };
 }
 
 export async function getSessionUser(): Promise<SessionUser | null> {
@@ -92,21 +168,83 @@ export async function listTasks(): Promise<Task[]> {
     .order("priority", { ascending: false });
 
   if (error || !data) return demoTasks;
+  return data.map(mapTask);
+}
 
-  return data.map((row) => ({
-    id: row.id,
-    title: row.title,
-    description: row.description,
-    status: row.status,
-    nextStep: row.next_step,
-    priority: row.priority,
-    lifecycle: row.lifecycle,
-    escalation: row.escalation,
-    category: row.category,
-    dueAt: row.due_at,
-    projectId: row.project_id,
-    ownerDependency: row.owner_dependency
-  }));
+export async function createTask(input: TaskInput) {
+  const supabase = getSupabaseBrowserClient();
+  const ownerUserId = await requireUserId();
+  if (!supabase || !ownerUserId) {
+    return { ok: true, demo: true };
+  }
+
+  const { data, error } = await supabase
+    .from("tasks")
+    .insert({
+      owner_user_id: ownerUserId,
+      title: input.title,
+      description: input.description,
+      category: input.category,
+      status: input.status,
+      priority: input.priority,
+      lifecycle: input.lifecycle,
+      escalation: input.escalation,
+      next_step: input.nextStep,
+      owner_dependency: input.ownerDependency,
+      due_at: input.dueAt || null,
+      project_id: input.projectId || null
+    })
+    .select("*")
+    .single();
+
+  return { ok: !error, data: data ? mapTask(data) : undefined, error: error ? normalizeError(error) : undefined };
+}
+
+export async function updateTask(taskId: string, input: Partial<TaskInput>) {
+  const supabase = getSupabaseBrowserClient();
+  const ownerUserId = await requireUserId();
+  if (!supabase || !ownerUserId) {
+    return { ok: true, demo: true };
+  }
+
+  const updates: Record<string, unknown> = {};
+  if (input.title !== undefined) updates.title = input.title;
+  if (input.description !== undefined) updates.description = input.description;
+  if (input.category !== undefined) updates.category = input.category;
+  if (input.status !== undefined) updates.status = input.status;
+  if (input.priority !== undefined) updates.priority = input.priority;
+  if (input.lifecycle !== undefined) updates.lifecycle = input.lifecycle;
+  if (input.escalation !== undefined) updates.escalation = input.escalation;
+  if (input.nextStep !== undefined) updates.next_step = input.nextStep;
+  if (input.ownerDependency !== undefined) updates.owner_dependency = input.ownerDependency;
+  if (input.dueAt !== undefined) updates.due_at = input.dueAt || null;
+  if (input.projectId !== undefined) updates.project_id = input.projectId || null;
+
+  const { data, error } = await supabase
+    .from("tasks")
+    .update(updates)
+    .eq("id", taskId)
+    .eq("owner_user_id", ownerUserId)
+    .select("*")
+    .single();
+
+  return { ok: !error, data: data ? mapTask(data) : undefined, error: error ? normalizeError(error) : undefined };
+}
+
+export async function completeTask(taskId: string) {
+  return updateTask(taskId, {
+    status: "Completed",
+    lifecycle: "completed",
+    escalation: "stable"
+  });
+}
+
+export async function archiveTask(taskId: string) {
+  return updateTask(taskId, {
+    status: "Archived",
+    lifecycle: "archived",
+    escalation: "parked"
+  });
 }
 
 export async function listProjects(): Promise<ProjectBrief[]> {
@@ -121,20 +259,128 @@ export async function listProjects(): Promise<ProjectBrief[]> {
     .order("updated_at", { ascending: false });
 
   if (error || !data) return demoProjects;
+  return data.map(mapProject);
+}
 
-  return data.map((row) => ({
-    id: row.id,
-    name: row.name,
-    objective: row.objective,
-    whyItMatters: row.why_it_matters,
-    currentStatus: row.current_status,
-    lifecycle: row.lifecycle,
-    escalation: row.escalation,
-    scope: row.scope ?? [],
-    risks: row.risks ?? [],
-    blockers: row.blockers ?? [],
-    nextSteps: row.next_steps ?? []
-  }));
+export async function getProject(projectId: string): Promise<ProjectBrief | null> {
+  const supabase = getSupabaseBrowserClient();
+  const ownerUserId = await requireUserId();
+  if (!supabase || !ownerUserId) {
+    return demoProjects.find((project) => project.id === projectId) ?? null;
+  }
+
+  const { data, error } = await supabase
+    .from("projects")
+    .select("*")
+    .eq("id", projectId)
+    .eq("owner_user_id", ownerUserId)
+    .single();
+
+  if (error || !data) return null;
+  return mapProject(data);
+}
+
+export async function createProject(input: ProjectBriefInput) {
+  const supabase = getSupabaseBrowserClient();
+  const ownerUserId = await requireUserId();
+  if (!supabase || !ownerUserId) {
+    return { ok: true, demo: true };
+  }
+
+  const { data, error } = await supabase
+    .from("projects")
+    .insert({
+      owner_user_id: ownerUserId,
+      name: input.name,
+      objective: input.objective,
+      why_it_matters: input.whyItMatters,
+      current_status: input.currentStatus,
+      lifecycle: input.lifecycle,
+      escalation: input.escalation,
+      scope: input.scope,
+      risks: input.risks,
+      blockers: input.blockers,
+      next_steps: input.nextSteps
+    })
+    .select("*")
+    .single();
+
+  return { ok: !error, data: data ? mapProject(data) : undefined, error: error ? normalizeError(error) : undefined };
+}
+
+export async function updateProject(projectId: string, input: Partial<ProjectBriefInput>) {
+  const supabase = getSupabaseBrowserClient();
+  const ownerUserId = await requireUserId();
+  if (!supabase || !ownerUserId) {
+    return { ok: true, demo: true };
+  }
+
+  const updates: Record<string, unknown> = {};
+  if (input.name !== undefined) updates.name = input.name;
+  if (input.objective !== undefined) updates.objective = input.objective;
+  if (input.whyItMatters !== undefined) updates.why_it_matters = input.whyItMatters;
+  if (input.currentStatus !== undefined) updates.current_status = input.currentStatus;
+  if (input.lifecycle !== undefined) updates.lifecycle = input.lifecycle;
+  if (input.escalation !== undefined) updates.escalation = input.escalation;
+  if (input.scope !== undefined) updates.scope = input.scope;
+  if (input.risks !== undefined) updates.risks = input.risks;
+  if (input.blockers !== undefined) updates.blockers = input.blockers;
+  if (input.nextSteps !== undefined) updates.next_steps = input.nextSteps;
+
+  const { data, error } = await supabase
+    .from("projects")
+    .update(updates)
+    .eq("id", projectId)
+    .eq("owner_user_id", ownerUserId)
+    .select("*")
+    .single();
+
+  return { ok: !error, data: data ? mapProject(data) : undefined, error: error ? normalizeError(error) : undefined };
+}
+
+export async function listDecisionLogs(projectId?: string): Promise<DecisionLog[]> {
+  const supabase = getSupabaseBrowserClient();
+  const ownerUserId = await requireUserId();
+  if (!supabase || !ownerUserId) return [];
+
+  let query = supabase
+    .from("decisions")
+    .select("*")
+    .eq("owner_user_id", ownerUserId)
+    .order("created_at", { ascending: false });
+
+  if (projectId) {
+    query = query.eq("project_id", projectId);
+  }
+
+  const { data, error } = await query;
+  if (error || !data) return [];
+  return data.map(mapDecision);
+}
+
+export async function createDecisionLog(input: DecisionLogInput) {
+  const supabase = getSupabaseBrowserClient();
+  const ownerUserId = await requireUserId();
+  if (!supabase || !ownerUserId) {
+    return { ok: true, demo: true };
+  }
+
+  const { data, error } = await supabase
+    .from("decisions")
+    .insert({
+      owner_user_id: ownerUserId,
+      project_id: input.projectId || null,
+      decision: input.decision,
+      context: input.context,
+      chosen_direction: input.chosenDirection,
+      why: input.why,
+      risks: input.risks,
+      revisit_trigger: input.revisitTrigger
+    })
+    .select("*")
+    .single();
+
+  return { ok: !error, data: data ? mapDecision(data) : undefined, error: error ? normalizeError(error) : undefined };
 }
 
 export async function listSavepoints(): Promise<Savepoint[]> {
@@ -149,17 +395,36 @@ export async function listSavepoints(): Promise<Savepoint[]> {
     .order("updated_at", { ascending: false });
 
   if (error || !data) return demoSavepoints;
+  return data.map(mapSavepoint);
+}
 
-  return data.map((row) => ({
-    id: row.id,
-    title: row.title,
-    currentStatus: row.current_status,
-    decisionsMade: row.decisions_made ?? [],
-    openQuestions: row.open_questions ?? [],
-    nextStep: row.next_step,
-    continuitySummary: row.continuity_summary,
-    updatedAt: row.updated_at
-  }));
+export async function createSavepoint(input: SavepointInput) {
+  const supabase = getSupabaseBrowserClient();
+  const ownerUserId = await requireUserId();
+  if (!supabase || !ownerUserId) {
+    return { ok: true, demo: true };
+  }
+
+  const { data, error } = await supabase
+    .from("savepoints")
+    .insert({
+      owner_user_id: ownerUserId,
+      title: input.title,
+      current_status: input.currentStatus,
+      decisions_made: input.decisionsMade,
+      open_questions: input.openQuestions,
+      next_step: input.nextStep,
+      continuity_summary: input.continuitySummary
+    })
+    .select("*")
+    .single();
+
+  return { ok: !error, data: data ? mapSavepoint(data) : undefined, error: error ? normalizeError(error) : undefined };
+}
+
+export async function getDashboardSummary(): Promise<DashboardSummary> {
+  const [tasks, projects] = await Promise.all([listTasks(), listProjects()]);
+  return computeDashboardSummary(tasks, projects);
 }
 
 export async function listKnowledge(): Promise<KnowledgeDocument[]> {
