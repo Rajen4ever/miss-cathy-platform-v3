@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "Miss Cathy",
+    "slug": "miss-cathy",
+    "scheme": "misscathy",
+    "version": "0.2.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "android": {
+      "package": "com.misscathy.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0b1020"
+      }
+    },
+    "plugins": ["expo-router"],
+    "extra": {
+      "eas": {
+        "projectId": "EXPO_PUBLIC_EAS_PROJECT_ID"
+      }
+    }
+  }
+}

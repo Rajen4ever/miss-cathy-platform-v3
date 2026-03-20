@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Miss Cathy Platform v2 Preview</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(125,211,252,0.12), transparent 24rem),
+        radial-gradient(circle at top right, rgba(192,132,252,0.10), transparent 26rem),
+        #050816;
+      color: #f8fbff;
+    }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 20px 64px; }
+    .panel {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 28px;
+      padding: 24px;
+      backdrop-filter: blur(14px);
+    }
+    .hero { display: grid; gap: 20px; grid-template-columns: 1.2fr .8fr; }
+    .grid { display: grid; gap: 16px; grid-template-columns: repeat(4, 1fr); margin-top: 18px; }
+    .badge { display: inline-block; padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(125,211,252,0.28); background: rgba(125,211,252,0.12); color: #d9f5ff; font-size: 12px; }
+    h1 { font-size: 56px; line-height: 1.02; margin: 18px 0; }
+    h2 { margin: 0 0 10px; font-size: 22px; }
+    p { color: #b8c1d6; line-height: 1.7; }
+    ul { padding-left: 18px; color: #c7d0e4; line-height: 1.8; }
+    @media (max-width: 960px) {
+      .hero, .grid { grid-template-columns: 1fr; }
+      h1 { font-size: 40px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="panel hero">
+      <div>
+        <span class="badge">Miss Cathy • Website + Android</span>
+        <h1>Premium personal AI chief-of-staff platform</h1>
+        <p>Dashboard-first command center on web. Fast operating companion on Android. Preserves continuity, truthful action boundaries, content, builder, health, monitoring, and connector registry behavior from the source pack.</p>
+        <ul>
+          <li>Supabase-ready auth + repositories</li>
+          <li>Android local reminders + push-token path</li>
+          <li>Connector registry with truthful execution states</li>
+          <li>Knowledge hub, savepoints, archive, and command routing</li>
+        </ul>
+      </div>
+      <div>
+        <div class="panel">
+          <h2>Build quality target</h2>
+          <p>Quality 10/10 • Architecture 10/10 • Practicality 10/10 • Scalability 10/10 • Truthfulness 10/10</p>
+        </div>
+        <div class="panel" style="margin-top:16px;">
+          <h2>Truthfulness</h2>
+          <p>No fake memory, autonomy, deployment, payment, or medical authority. External actions stay labeled as connector, handoff, or recommendation only.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="panel"><h2>Dashboard</h2><p>Focus Now, Blocked, Waiting On, Risks, and Next 3 Moves.</p></div>
+      <div class="panel"><h2>Tasks + Projects</h2><p>Priority, lifecycle, next step, dependency, decisions, and savepoints.</p></div>
+      <div class="panel"><h2>Knowledge Hub</h2><p>Source-of-truth files, continuity notes, and archive state.</p></div>
+      <div class="panel"><h2>Auto Command</h2><p>Short commands routed into truthful execution bands.</p></div>
+      <div class="panel"><h2>Content Studio</h2><p>Hooks, captions, scripts, repurposing, and publish plans.</p></div>
+      <div class="panel"><h2>Builder Studio</h2><p>PRDs, architecture, feature maps, and deployment handoffs.</p></div>
+      <div class="panel"><h2>Health Ops</h2><p>Educational organization, visit prep, follow-up, and reminders.</p></div>
+      <div class="panel"><h2>Connector Center</h2><p>Verified state, confirmation policy, fallback path, and boundaries.</p></div>
+    </section>
+  </div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html, body {
+  min-height: 100%;
+}
+
+body {
+  @apply bg-ink text-slate-100 antialiased;
+  background-image:
+    radial-gradient(circle at top left, rgba(125,211,252,0.12), transparent 24rem),
+    radial-gradient(circle at top right, rgba(192,132,252,0.10), transparent 26rem);
+}
+
+a {
+  @apply transition-colors;
+}
+
+.panel {
+  @apply rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur;
+}
+
+.badge {
+  @apply inline-flex items-center rounded-full border border-white/10 px-3 py-1 text-xs font-medium text-slate-300;
+}
+
+.kicker {
+  @apply text-xs uppercase tracking-[0.2em] text-slate-500;
+}
+
+.metric {
+  @apply text-3xl font-semibold tracking-tight;
+}

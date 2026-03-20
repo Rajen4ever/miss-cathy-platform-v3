@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Miss Cathy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{color-scheme:dark}
+    body{margin:0;font-family:Inter,system-ui,sans-serif;background:#050816;color:#f8fbff;
+      background-image:radial-gradient(circle at top left, rgba(125,211,252,.12), transparent 24rem),
+      radial-gradient(circle at top right, rgba(192,132,252,.10), transparent 26rem);}
+    .wrap{max-width:1100px;margin:0 auto;padding:32px 20px 64px}
+    .panel{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:28px;padding:24px;backdrop-filter: blur(14px)}
+    .grid{display:grid;gap:16px}.hero{display:grid;gap:20px;grid-template-columns:1.1fr .9fr}.cards{grid-template-columns:repeat(3,1fr);margin-top:18px}
+    h1{font-size:56px;line-height:1.02;margin:12px 0 18px}h2{font-size:22px;margin:0 0 10px}
+    p,li{color:#bcc6db;line-height:1.7}.badge{display:inline-block;padding:8px 12px;border-radius:999px;border:1px solid rgba(125,211,252,.28);background:rgba(125,211,252,.12);color:#d9f5ff;font-size:12px}
+    a{color:#7dd3fc;text-decoration:none}.nav{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+    @media(max-width:960px){.hero,.cards{grid-template-columns:1fr}h1{font-size:40px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="panel hero">
+      <div>
+        <span class="badge">Miss Cathy • Website + Android</span>
+        <h1>Turn intent into execution.</h1>
+        <p>Miss Cathy is a premium personal AI chief-of-staff operating system built for one user. It combines a deep-work website command center with a fast Android companion for dashboard review, quick command, follow-through, reminders, and continuity.</p>
+        <div class="nav">
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms</a>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Core promise</h2>
+        <p>No fake memory. No fake autonomy. No fake connector execution. No fake clinical authority. The system is designed for structure, continuity, and truthful action boundaries.</p>
+      </div>
+    </section>
+
+    <section class="grid cards">
+      <div class="panel"><h2>Command Center</h2><p>Dashboard, tasks, projects, knowledge hub, savepoints, and archive.</p></div>
+      <div class="panel"><h2>Content + Builder</h2><p>Hooks, scripts, product briefs, architecture packs, and launch handoffs.</p></div>
+      <div class="panel"><h2>Health + Monitoring</h2><p>Educational follow-up, reminder support, watchlists, and briefings.</p></div>
+    </section>
+  </div>
+</body>
+</html>
