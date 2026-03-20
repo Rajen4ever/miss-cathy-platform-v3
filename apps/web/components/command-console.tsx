@@ -6,12 +6,12 @@ import { saveCommandHistory } from "../lib/repositories";
 
 export function CommandConsole() {
   const [input, setInput] = useState("Build the next launch plan for Miss Cathy and tell me the truthful execution boundary.");
-  const [result, setResult] = useState(() => buildCommandResult(input));
+  const [result, setResult] = useState(() => buildCommandResult("planning", "direct"));
   const [saved, setSaved] = useState("Not saved yet.");
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
-    const nextResult = buildCommandResult(input);
+    const nextResult = buildCommandResult("planning", "direct");
     setResult(nextResult);
     const response = await saveCommandHistory(input, nextResult.mode, nextResult.executionBand, nextResult);
     setSaved(response.ok ? "Command history stored (or demo fallback used)." : response.error ?? "Save failed.");
@@ -68,3 +68,4 @@ export function CommandConsole() {
     </div>
   );
 }
+
