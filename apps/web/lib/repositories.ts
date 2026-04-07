@@ -1,12 +1,17 @@
 import type {
   BuilderBrief,
+  BuilderBriefInput,
+  CommandHistoryEntry,
   ConnectorRegistryItem,
   ContentPack,
+  ContentPackInput,
   DashboardSummary,
   DecisionLog,
   DecisionLogInput,
   HealthFollowUp,
+  HealthFollowUpInput,
   KnowledgeDocument,
+  KnowledgeDocumentInput,
   ProjectBrief,
   ProjectBriefInput,
   Savepoint,
@@ -14,7 +19,8 @@ import type {
   SessionUser,
   Task,
   TaskInput,
-  MonitoringBrief
+  MonitoringBrief,
+  MonitoringBriefInput
 } from "@misscathy/types";
 import {
   computeDashboardSummary,
@@ -107,6 +113,17 @@ function mapSavepoint(row: any): Savepoint {
     nextStep: row.next_step,
     continuitySummary: row.continuity_summary,
     updatedAt: row.updated_at
+  };
+}
+
+function mapCommandHistory(row: any): CommandHistoryEntry {
+  return {
+    id: row.id,
+    inputText: row.input_text,
+    mode: row.mode,
+    executionBand: row.execution_band,
+    createdAt: row.created_at,
+    resultJson: row.result_json ?? {}
   };
 }
 
@@ -545,6 +562,212 @@ export async function listMonitoring(): Promise<MonitoringBrief[]> {
     riskLevel: row.risk_level,
     recommendedMove: row.recommended_move
   }));
+}
+
+
+export async function createKnowledgeDocument(input: KnowledgeDocumentInput) {
+  const supabase = getSupabaseBrowserClient();
+  const ownerUserId = await requireUserId();
+  if (!supabase || !ownerUserId) {
+    return { ok: true, demo: true };
+  }
+
+  const { data, error } = await supabase
+    .from("knowledge_documents")
+    .insert({
+      owner_user_id: ownerUserId,
+      title: input.title,
+      summary: input.summary,
+      tags: input.tags,
+      source_of_truth: input.sourceOfTruth,
+      status: input.status
+    })
+    .select("*")
+    .single();
+
+  return {
+    ok: !error,
+    data: data
+      ? {
+          id: data.id,
+          title: data.title,
+          summary: data.summary,
+          tags: data.tags ?? [],
+          sourceOfTruth: data.source_of_truth,
+          status: data.status,
+          updatedAt: data.updated_at
+        }
+      : undefined,
+    error: error ? normalizeError(error) : undefined
+  };
+}
+
+export async function createContentPack(input: ContentPackInput) {
+  const supabase = getSupabaseBrowserClient();
+  const ownerUserId = await requireUserId();
+  if (!supabase || !ownerUserId) {
+    return { ok: true, demo: true };
+  }
+
+  const { data, error } = await supabase
+    .from("content_packs")
+    .insert({
+      owner_user_id: ownerUserId,
+      title: input.title,
+      channel: input.channel,
+      asset_type: input.assetType,
+      goal: input.goal,
+      hook: input.hook,
+      repurposing_plan: input.repurposingPlan,
+      publish_plan: input.publishPlan
+    })
+    .select("*")
+    .single();
+
+  return {
+    ok: !error,
+    data: data
+      ? {
+          id: data.id,
+          title: data.title,
+          channel: data.channel,
+          assetType: data.asset_type,
+          goal: data.goal,
+          hook: data.hook,
+          repurposingPlan: data.repurposing_plan ?? [],
+          publishPlan: data.publish_plan
+        }
+      : undefined,
+    error: error ? normalizeError(error) : undefined
+  };
+}
+
+export async function createBuilderBrief(input: BuilderBriefInput) {
+  const supabase = getSupabaseBrowserClient();
+  const ownerUserId = await requireUserId();
+  if (!supabase || !ownerUserId) {
+    return { ok: true, demo: true };
+  }
+
+  const { data, error } = await supabase
+    .from("builder_briefs")
+    .insert({
+      owner_user_id: ownerUserId,
+      name: input.name,
+      product_goal: input.productGoal,
+      user_flow: input.userFlow,
+      stack_choice: input.stackChoice,
+      next_step: input.nextStep
+    })
+    .select("*")
+    .single();
+
+  return {
+    ok: !error,
+    data: data
+      ? {
+          id: data.id,
+          name: data.name,
+          productGoal: data.product_goal,
+          userFlow: data.user_flow ?? [],
+          stackChoice: data.stack_choice ?? [],
+          nextStep: data.next_step
+        }
+      : undefined,
+    error: error ? normalizeError(error) : undefined
+  };
+}
+
+export async function createHealthFollowUp(input: HealthFollowUpInput) {
+  const supabase = getSupabaseBrowserClient();
+  const ownerUserId = await requireUserId();
+  if (!supabase || !ownerUserId) {
+    return { ok: true, demo: true };
+  }
+
+  const { data, error } = await supabase
+    .from("health_follow_ups")
+    .insert({
+      owner_user_id: ownerUserId,
+      title: input.title,
+      urgency_level: input.urgencyLevel,
+      likely_domain: input.likelyDomain,
+      care_setting: input.careSetting,
+      questions_to_prepare: input.questionsToPrepare,
+      safety_note: input.safetyNote,
+      next_step: input.nextStep
+    })
+    .select("*")
+    .single();
+
+  return {
+    ok: !error,
+    data: data
+      ? {
+          id: data.id,
+          title: data.title,
+          urgencyLevel: data.urgency_level,
+          likelyDomain: data.likely_domain,
+          careSetting: data.care_setting,
+          questionsToPrepare: data.questions_to_prepare ?? [],
+          safetyNote: data.safety_note,
+          nextStep: data.next_step
+        }
+      : undefined,
+    error: error ? normalizeError(error) : undefined
+  };
+}
+
+export async function createMonitoringBrief(input: MonitoringBriefInput) {
+  const supabase = getSupabaseBrowserClient();
+  const ownerUserId = await requireUserId();
+  if (!supabase || !ownerUserId) {
+    return { ok: true, demo: true };
+  }
+
+  const { data, error } = await supabase
+    .from("monitoring_briefs")
+    .insert({
+      owner_user_id: ownerUserId,
+      topic: input.topic,
+      why_it_matters: input.whyItMatters,
+      latest_change: input.latestChange,
+      risk_level: input.riskLevel,
+      recommended_move: input.recommendedMove
+    })
+    .select("*")
+    .single();
+
+  return {
+    ok: !error,
+    data: data
+      ? {
+          id: data.id,
+          topic: data.topic,
+          whyItMatters: data.why_it_matters,
+          latestChange: data.latest_change,
+          riskLevel: data.risk_level,
+          recommendedMove: data.recommended_move
+        }
+      : undefined,
+    error: error ? normalizeError(error) : undefined
+  };
+}
+
+export async function listCommandHistory(limit = 12): Promise<CommandHistoryEntry[]> {
+  const supabase = getSupabaseBrowserClient();
+  const ownerUserId = await requireUserId();
+  if (!supabase || !ownerUserId) return [];
+
+  const { data, error } = await supabase
+    .from("command_history")
+    .select("*")
+    .eq("owner_user_id", ownerUserId)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error || !data) return [];
+  return data.map(mapCommandHistory);
 }
 
 export async function listConnectors(): Promise<ConnectorRegistryItem[]> {

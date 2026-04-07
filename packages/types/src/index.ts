@@ -165,8 +165,26 @@ export interface KnowledgeDocument {
   updatedAt: string;
 }
 
+export interface KnowledgeDocumentInput {
+  title: string;
+  summary: string;
+  tags: string[];
+  sourceOfTruth: boolean;
+  status: "active" | "archived";
+}
+
 export interface ContentPack {
   id: string;
+  title: string;
+  channel: string;
+  assetType: string;
+  goal: string;
+  hook: string;
+  repurposingPlan: string[];
+  publishPlan: string;
+}
+
+export interface ContentPackInput {
   title: string;
   channel: string;
   assetType: string;
@@ -185,6 +203,14 @@ export interface BuilderBrief {
   nextStep: string;
 }
 
+export interface BuilderBriefInput {
+  name: string;
+  productGoal: string;
+  userFlow: string[];
+  stackChoice: string[];
+  nextStep: string;
+}
+
 export interface HealthFollowUp {
   id: string;
   title: string;
@@ -196,8 +222,26 @@ export interface HealthFollowUp {
   nextStep: string;
 }
 
+export interface HealthFollowUpInput {
+  title: string;
+  urgencyLevel: 1 | 2 | 3 | 4;
+  likelyDomain: string;
+  careSetting: string;
+  questionsToPrepare: string[];
+  safetyNote: string;
+  nextStep: string;
+}
+
 export interface MonitoringBrief {
   id: string;
+  topic: string;
+  whyItMatters: string;
+  latestChange: string;
+  riskLevel: "low" | "moderate" | "high";
+  recommendedMove: string;
+}
+
+export interface MonitoringBriefInput {
   topic: string;
   whyItMatters: string;
   latestChange: string;
@@ -253,7 +297,17 @@ export interface CommandResult {
   headline: string;
   sections: CommandSection[];
   nextStep: string;
+  targetPath?: string;
   actionPack?: ActionPack;
+}
+
+export interface CommandHistoryEntry {
+  id: string;
+  inputText: string;
+  mode: string;
+  executionBand: ExecutionBand;
+  createdAt: string;
+  resultJson: Record<string, unknown>;
 }
 
 export interface SessionUser {

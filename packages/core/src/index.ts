@@ -122,6 +122,15 @@ export const demoKnowledge: KnowledgeDocument[] = [
     sourceOfTruth: true,
     status: "active",
     updatedAt: "2026-03-18T12:00:00.000Z"
+  },
+  {
+    id: "knowledge-2",
+    title: "Website + Android Product Draft",
+    summary: "Product direction, surfaces, module scope, delivery order, and implementation notes for the website and Android build.",
+    tags: ["product", "website", "android"],
+    sourceOfTruth: true,
+    status: "active",
+    updatedAt: "2026-03-21T09:30:00.000Z"
   }
 ];
 
@@ -320,21 +329,111 @@ export function computeDashboardSummary(tasks: Task[], projects: ProjectBrief[])
   };
 }
 
-export function buildCommandResult(mode: Mode, executionBand: ExecutionBand): CommandResult {
+function inferModeFromInput(input: string): Mode {
+  const value = input.toLowerCase();
+  if (value.includes("health")) return "health";
+  if (value.includes("builder") || value.includes("mvp") || value.includes("prd") || value.includes("architecture")) return "builder";
+  if (value.includes("content") || value.includes("caption") || value.includes("script") || value.includes("publish")) return "content";
+  if (value.includes("monitor") || value.includes("watchlist") || value.includes("briefing")) return "monitoring";
+  if (value.includes("knowledge") || value.includes("manual") || value.includes("savepoint") || value.includes("archive")) return "knowledge";
+  if (value.includes("research") || value.includes("verify")) return "research";
+  if (value.includes("review") || value.includes("audit")) return "review";
+  if (value.includes("plan") || value.includes("option")) return "planning";
+  return "execution";
+}
+
+function inferExecutionBandFromInput(input: string): ExecutionBand {
+  const value = input.toLowerCase();
+  if (value.includes("handoff")) return "handoff";
+  if (value.includes("deploy") || value.includes("publish") || value.includes("send") || value.includes("vercel")) return "connector";
+  if (value.includes("recommend") || value.includes("if access is not available") || value.includes("without access")) return "recommendation";
+  return "direct";
+}
+
+function inferTargetPath(input: string): string | undefined {
+  const value = input.toLowerCase();
+  if (value.includes("dashboard")) return "/dashboard";
+  if (value.includes("focus now")) return "/dashboard?panel=focus";
+  if (value.includes("next 3 moves")) return "/dashboard?panel=next-moves";
+  if (value.includes("task")) return "/tasks";
+  if (value.includes("project")) return "/projects";
+  if (value.includes("knowledge")) return "/knowledge";
+  if (value.includes("operating manual")) return "/knowledge?document=knowledge-1";
+  if (value.includes("product draft")) return "/knowledge?document=knowledge-2";
+  if (value.includes("archive")) return "/archive";
+  if (value.includes("latest savepoint")) return "/archive?savepoint=savepoint-1";
+  if (value.includes("content")) return "/content";
+  if (value.includes("builder")) return "/builder";
+  if (value.includes("health")) return "/health";
+  if (value.includes("connector")) return "/connectors";
+  if (value.includes("monitor")) return "/monitoring";
+  return undefined;
+}
+
+export function buildCommandResult(input: string): CommandResult {
+  const mode = inferModeFromInput(input);
+  const executionBand = inferExecutionBandFromInput(input);
+  const targetPath = inferTargetPath(input);
+  const value = input.trim();
+
+  const sections = [
+    {
+      title: "Current status",
+      body:
+        executionBand === "direct"
+          ? "This command can be handled directly in the live workspace without overstating outside access."
+          : executionBand === "connector"
+            ? "This command points to a connected-system path. Real execution still depends on configured access and confirmation where required."
+            : executionBand === "handoff"
+              ? "This command should produce a handoff-ready pack rather than pretending direct execution."
+              : "This command stays in recommendation mode because direct access is missing or intentionally not assumed."
+    },
+    {
+      title: "What this command implies",
+      body:
+        targetPath
+          ? `The strongest next move is to open ${targetPath} and continue from the relevant live module.`
+          : "The strongest next move is to turn this into a specific module action, artifact, or decision."
+    }
+  ];
+
+  const actionPack: ActionPack | undefined =
+    executionBand === "connector" || executionBand === "handoff"
+      ? {
+          objective: value,
+          targetService: value.toLowerCase().includes("vercel") ? "Vercel" : "External connector",
+          connectorState: executionBand === "connector" ? "available_but_unconfigured" : "handoff_only",
+          requiredInputs: executionBand === "connector"
+            ? ["Verified account access", "Required deployment fields", "Approval before write"]
+            : ["Target service", "Manual execution owner", "Review before send"],
+          preparedPayload:
+            executionBand === "connector"
+              ? "Prepare deployment target, environment variables, git branch, and approval state before executing."
+              : "Prepare a handoff brief with target environment, exact objective, and manual execution steps.",
+          confirmationNeeded: true,
+          manualStep:
+            executionBand === "connector"
+              ? "Confirm connector access or switch to a manual deployment runbook."
+              : "Send the handoff pack to the execution owner.",
+          nextStep:
+            executionBand === "connector"
+              ? "Verify access, then draft the deployment action."
+              : "Generate the final handoff pack."
+        }
+      : undefined;
+
   return {
     mode,
     executionBand,
-    headline: "Miss Cathy keeps truthfulness explicit.",
-    sections: [
-      {
-        title: "Current status",
-        body: "This output respects direct execution, connector execution, handoff readiness, and recommendation-only boundaries."
-      },
-      {
-        title: "Next move",
-        body: "Advance the current task or create a savepoint so continuity stays visible."
-      }
-    ],
-    nextStep: "Update the relevant module and capture the next step."
+    headline: value || "Route the next command.",
+    sections,
+    nextStep:
+      targetPath
+        ? `Open ${targetPath} and continue from the live module.`
+        : executionBand === "recommendation"
+          ? "Turn this into a recommendation or runbook with explicit assumptions."
+          : "Continue from the active module and capture the next step.",
+    targetPath,
+    actionPack
   };
 }

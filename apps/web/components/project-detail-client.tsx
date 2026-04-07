@@ -63,7 +63,7 @@ export function ProjectDetailClient({ projectId }: { projectId: string }) {
   }
 
   async function saveProject() {
-  if (!project) return;
+    if (!project) return;
     const input: Partial<ProjectBriefInput> = {
       name: project.name,
       objective: project.objective,
@@ -155,4 +155,3 @@ export function ProjectDetailClient({ projectId }: { projectId: string }) {
     </div>
   );
 }
-
